@@ -30,10 +30,22 @@ class _MyHomePageState extends State<MyHomePage> {
   int _a = 0;
   int _b = 0;
 
-  void _getSum(){
-    setState(() {
-      _sum = _a + _b;
-    });
+  Future<void> _getSum() async {
+    const channel = MethodChannel('cod3r.com.br/nativo');
+
+    try {
+      final res = await channel.invokeMethod('getSum', {"a": _a, "b": _b});
+
+      setState(() {
+        _sum = res;
+      });
+
+    } on PlatformException {
+      setState(() {
+        _sum = 0;
+      });
+    }
+
   }
 
   @override
@@ -44,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: Padding(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
